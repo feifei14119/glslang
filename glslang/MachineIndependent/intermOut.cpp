@@ -696,6 +696,10 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     case EOpConstructReference: out.debug << "Construct reference type"; break;
 
+#ifndef GLSLANG_WEB
+    case EOpSpirvInst: out.debug << "spirv_instruction"; break;
+#endif
+
     default: out.debug.message(EPrefixError, "Bad unary op");
     }
 
@@ -1126,7 +1130,9 @@ bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node
     case EOpIsHelperInvocation: out.debug << "IsHelperInvocation"; break;
     case EOpDebugPrintf:  out.debug << "Debug printf";  break;
 
-    case EOpFtransform:  out.debug << "ftransform"; break;
+#ifndef GLSLANG_WEB
+    case EOpSpirvInst: out.debug << "spirv_instruction"; break;
+#endif
 
     default: out.debug.message(EPrefixError, "Bad aggregation op");
     }
@@ -1488,6 +1494,9 @@ void TIntermediate::output(TInfoSink& infoSink, bool tree)
 
     if (xfbMode)
         infoSink.debug << "in xfb mode\n";
+
+    if (getSubgroupUniformControlFlow())
+        infoSink.debug << "subgroup_uniform_control_flow\n";
 
     switch (language) {
     case EShLangVertex:
