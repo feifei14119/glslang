@@ -117,30 +117,41 @@ int C_DECL main(int argc, char* argv[])
     ShInitialize();
 
 #ifdef _WIN32
-    __try {
+    __try 
+    {
 #endif
         argc--;
         argv++;    
-        for (; argc >= 1; argc--, argv++) {
-            if (argv[0][0] == '-' || argv[0][0] == '/') {
-                switch (argv[0][1]) {
-                case 'd': delay    = true;                           break;
-
-#ifdef MEASURE_MEMORY
-                case 'i': break;
-                case 'a': break;
-                case 'h': break;
-#else
-                case 'i': debugOptions |= EDebugOpIntermediate;       break;
-                case 'a': debugOptions |= EDebugOpAssembly;           break;
-#endif
-                case 'c': if(!ShOutputMultipleStrings(++argv))
-                                                         return EFailUsage; 
-                          --argc;                                    break;
-                case 'm': debugOptions |= EDebugOpLinkMaps;           break;
-                default:  usage();                       return EFailUsage;
+        for (; argc >= 1; argc--, argv++) 
+        {
+            if (argv[0][0] == '-' || argv[0][0] == '/')
+            {
+                switch (argv[0][1]) 
+                {
+                case 'd': 
+                    delay    = true;                           
+                    break;
+                case 'i': 
+                    debugOptions |= EDebugOpIntermediate;     
+                    break;
+                case 'a':
+                    debugOptions |= EDebugOpAssembly;      
+                    break;
+                case 'c': 
+                    if(!ShOutputMultipleStrings(++argv)) 
+                        return EFailUsage; 
+                    --argc;     
+                    break;
+                case 'm': 
+                    debugOptions |= EDebugOpLinkMaps;   
+                    break;
+                default:  
+                    usage();             
+                    return EFailUsage;
                 }
-            } else {
+            } 
+            else 
+            {
                 compilers[numCompilers] = ShConstructCompiler(FindLanguage(argv[0]), debugOptions);
                 if (compilers[numCompilers] == 0)
                     return EFailCompilerCreate;
@@ -151,9 +162,10 @@ int C_DECL main(int argc, char* argv[])
                 if (! CompileFile(argv[0], compilers[numCompilers-1], debugOptions, &resources))
                     compileFailed = true;                
             }
-        }
+        } // end for argc
 
-        if (!numCompilers) {
+        if (!numCompilers) 
+        {
             usage();
             return EFailUsage;
         }
@@ -166,13 +178,15 @@ int C_DECL main(int argc, char* argv[])
         if (uniformMap == 0)
             return EFailLinkerCreate;
 
-        if (numCompilers > 0) {
+        if (numCompilers > 0) 
+        {
             ShSetFixedAttributeBindings(linker, &FixedAttributeTable);
             if (! ShLink(linker, compilers, numCompilers, uniformMap, 0, 0))
                 linkFailed = true;
         }
 
-        for (i = 0; i < numCompilers; ++i) {
+        for (i = 0; i < numCompilers; ++i)
+        {
             InfoLogMsg("BEGIN", "COMPILER", i);
             puts(ShGetInfoLog(compilers[i]));
             InfoLogMsg("END", "COMPILER", i);
@@ -183,7 +197,9 @@ int C_DECL main(int argc, char* argv[])
         InfoLogMsg("END", "LINKER", -1);
     
 #ifdef _WIN32
-    } __finally {    
+    } 
+    __finally 
+    {    
 #endif    
         for (i = 0; i < numCompilers; ++i)
             ShDestruct(compilers[i]);
@@ -194,7 +210,6 @@ int C_DECL main(int argc, char* argv[])
 #ifdef _WIN32
         if (delay)
             Sleep(1000000);
-
     }
 #endif
 
@@ -244,23 +259,10 @@ bool CompileFile(char *fileName, ShHandle compiler, int debugOptions, const TBui
     int ret;
     char **data = ReadFileData(fileName);
 
-#ifdef MEASURE_MEMORY
-    PROCESS_MEMORY_COUNTERS counters;
-#endif
-
     if (!data)
         return false;
 
-#ifdef MEASURE_MEMORY
-    for (int i = 0; i < 1000; ++i) {
-        for (int j = 0; j < 100; ++j)
-#endif
-            ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions);
-#ifdef MEASURE_MEMORY
-
-        GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters));
-    }
-#endif
+    ret = ShCompile(compiler, data, OutputMultipleStrings, EShOptNone, resources, debugOptions);
 
     FreeFileData(data);
 
