@@ -98,6 +98,8 @@ void OutputTreeText(TInfoSink& infoSink, TIntermNode* node, const int depth)
 void OutputSymbol(TIntermSymbol* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
+    TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Symbol\n";
 
     OutputTreeText(oit->infoSink, node, oit->depth);
 
@@ -113,6 +115,7 @@ bool OutputBinary(bool /* preVisit */, TIntermBinary* node, TIntermTraverser* it
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Binary\n";
 
     OutputTreeText(out, node, oit->depth);
 
@@ -178,6 +181,7 @@ bool OutputUnary(bool /* preVisit */, TIntermUnary* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Unary\n";
 
     OutputTreeText(out, node, oit->depth);
 
@@ -244,6 +248,7 @@ bool OutputAggregate(bool /* preVisit */, TIntermAggregate* node, TIntermTravers
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Aggregate\n";
 
     if (node->getOp() == EOpNull) {
         out.debug.message(EPrefixError, "node is still EOpNull!");
@@ -328,6 +333,7 @@ bool OutputSelection(bool /* preVisit */, TIntermSelection* node, TIntermTravers
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Selection\n";
 
     OutputTreeText(out, node, oit->depth);
 
@@ -362,6 +368,7 @@ void OutputConstantUnion(TIntermConstantUnion* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: ConstantUnion\n";
     
     int size = node->getType().getObjectSize();
 
@@ -405,6 +412,7 @@ bool OutputLoop(bool /* preVisit */, TIntermLoop* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Loop\n";
 
     OutputTreeText(out, node, oit->depth);
     
@@ -444,6 +452,7 @@ bool OutputBranch(bool /* previsit*/, TIntermBranch* node, TIntermTraverser* it)
 {
     TOutputTraverser* oit = static_cast<TOutputTraverser*>(it);
     TInfoSink& out = oit->infoSink;
+    out.debug << "[FF]: Branch\n";
 
     OutputTreeText(out, node, oit->depth);
 

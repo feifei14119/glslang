@@ -308,7 +308,8 @@ int ShCompile(
     if (ret)
         success = false;
 
-    if (success && parseContext.treeRoot) {
+    if (success && parseContext.treeRoot) 
+    {
         if (optLevel == EShOptNoGeneration)
             parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
         else {
@@ -326,7 +327,9 @@ int ShCompile(
                     success = false;
             }
         }
-    } else if (!success) {
+    } 
+    else if (!success)
+    {
         parseContext.infoSink.info.prefix(EPrefixError);
         parseContext.infoSink.info << parseContext.numErrors << " compilation errors.  No code generated.\n\n";
         success = false;
