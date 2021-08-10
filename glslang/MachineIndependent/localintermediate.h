@@ -75,6 +75,8 @@ public:
     bool postProcess(TIntermNode*, EShLanguage);
 	void remove(TIntermNode*);
     void outputTree(TIntermNode*);
+    void outputSymbolTable(TSymbolTable*);
+    void outputSymbolTableLevel(TSymbolTableLevel*);
     
 protected:
     TInfoSink& infoSink;

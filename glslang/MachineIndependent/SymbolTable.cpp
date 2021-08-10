@@ -110,28 +110,50 @@ int TType::getStructSize() const
 void TVariable::dump(TInfoSink& infoSink) const 
 {
     infoSink.debug << getName().c_str() << ": " << type.getQualifierString() << " " << type.getBasicString();
-    if (type.isArray()) {
+    if (type.isArray()) 
+    {
         infoSink.debug << "[0]";
     }
     infoSink.debug << "\n";
+    printf("(var)%d = %s, ", getUniqueId(), getName().c_str());
+    printf("Type: %s, ", type.getBasicString());
+    printf("\n");
 }
 
 void TFunction::dump(TInfoSink &infoSink) const
 {
     infoSink.debug << getName().c_str() << ": " <<  returnType.getBasicString() << " " << getMangledName().c_str() << "\n";
+    printf("(func)%d = %s, ", getUniqueId(), getName().c_str());
+    printf("RtnType: %s, ", returnType.getBasicString());
+    printf("MangledName: \"%s\" ", getMangledName().c_str());
+    int param_cnt = parameters.size();
+    printf("ParamCnt = %d<", param_cnt);
+    for (int i = 0; i < param_cnt; i++)
+    {
+        printf("%s, ", parameters[i].name->c_str());
+    }
+    printf(">");
+    printf("\n");
 }
 
 void TSymbolTableLevel::dump(TInfoSink &infoSink) const 
 {
     tLevel::const_iterator it;
+    int l = 0;
     for (it = level.begin(); it != level.end(); ++it)
+    {
+        //printf("[Symbol Table Level] level = %d:\n", l);
         (*it).second->dump(infoSink);
+        l++;
+    }
 }
 
 void TSymbolTable::dump(TInfoSink &infoSink) const
 {
-    for (int level = currentLevel(); level >= 0; --level) {
+    for (int level = currentLevel(); level >= 0; --level)
+    {
         infoSink.debug << "LEVEL " << level << "\n";
+        printf("[Symbol Table] index = %d:\n", level);
         table[level]->dump(infoSink);
     }
 }

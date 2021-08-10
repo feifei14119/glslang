@@ -340,15 +340,11 @@ char** ReadFileData(char *fileName)
     return return_data;
 }
 
-
-
 void FreeFileData(char **data)
 {
     for(int i=0;i<OutputMultipleStrings;i++)
         free(data[i]);
 }
-
-
 
 void InfoLogMsg(char* msg, const char* name, const int num)
 {

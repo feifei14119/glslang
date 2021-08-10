@@ -58,6 +58,7 @@ bool CompareStructure(const TType& leftNodeType, constUnion* rightUnionArray, co
 //
 TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType& type, TSourceLoc line)
 {
+    printf("[FF]: addSymbol: %s\n", name.c_str());
     TIntermSymbol* node = new TIntermSymbol(id, name, type);
     node->setLine(line);
 
@@ -71,6 +72,7 @@ TIntermSymbol* TIntermediate::addSymbol(int id, const TString& name, const TType
 //
 TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line, TSymbolTable& symbolTable)
 {
+    printf("[FF]: addBinaryMath\n");
     switch (op) {
     case EOpLessThan:
     case EOpGreaterThan:
@@ -162,6 +164,7 @@ TIntermTyped* TIntermediate::addBinaryMath(TOperator op, TIntermTyped* left, TIn
 //
 TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
+    printf("[FF]: addAssign\n");
     //
     // Like adding binary math, except the conversion can only go
     // from right to left.
@@ -192,6 +195,7 @@ TIntermTyped* TIntermediate::addAssign(TOperator op, TIntermTyped* left, TInterm
 //
 TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermTyped* index, TSourceLoc line)
 {
+    printf("[FF]: addIndex\n");
     TIntermBinary* node = new TIntermBinary(op);
     if (line == 0)
         line = index->getLine();
@@ -211,17 +215,21 @@ TIntermTyped* TIntermediate::addIndex(TOperator op, TIntermTyped* base, TIntermT
 //
 TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, TSourceLoc line, TSymbolTable& symbolTable)
 {
+    printf("[FF]: addUnaryMath\n");
     TIntermUnary* node;
     TIntermTyped* child = childNode->getAsTyped();
 
-    if (child == 0) {
+    if (child == 0)
+    {
         infoSink.info.message(EPrefixInternalError, "Bad type in AddUnaryMath", line);
         return 0;
     }
 
-    switch (op) {
+    switch (op) 
+    {
     case EOpLogicalNot:
-        if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) {
+        if (child->getType().getBasicType() != EbtBool || child->getType().isMatrix() || child->getType().isArray() || child->getType().isVector()) 
+        {
             return 0;
         }
         break;
@@ -242,18 +250,19 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     // Note: Implicit promotions were removed from the language.
     //
     TBasicType newType = EbtVoid;
-    switch (op) {
+    switch (op) 
+    {
     case EOpConstructInt:   newType = EbtInt;   break;
     case EOpConstructBool:  newType = EbtBool;  break;
     case EOpConstructFloat: newType = EbtFloat; break;
     default: break;
     }
 
-    if (newType != EbtVoid) {
-        child = addConversion(op, TType(newType, EvqTemporary, child->getNominalSize(), 
-                                                               child->isMatrix(), 
-                                                               child->isArray()),
-                              child);
+    if (newType != EbtVoid)
+    {
+        child = addConversion(op, 
+            TType(newType, EvqTemporary, child->getNominalSize(), child->isMatrix(), child->isArray()),
+            child);
         if (child == 0)
             return 0;
     }
@@ -261,7 +270,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     //
     // For constructors, we are now done, it's all in the conversion.
     //
-    switch (op) {
+    switch (op) 
+    {
     case EOpConstructInt:
     case EOpConstructBool:
     case EOpConstructFloat:
@@ -285,7 +295,8 @@ TIntermTyped* TIntermediate::addUnaryMath(TOperator op, TIntermNode* childNode, 
     if (! node->promote(infoSink))
         return 0;
 
-    if (childTempConstant)  {
+    if (childTempConstant)  
+    {
         TIntermTyped* newChild = childTempConstant->fold(op, 0, infoSink);
         
         if (newChild)
@@ -333,6 +344,7 @@ TIntermAggregate* TIntermediate::setAggregateOperator(TIntermNode* node, TOperat
     if (line != 0)
         aggNode->setLine(line);
 
+    printf("[FF]: setAggregateOperator -> %s\n", aggNode->getName().c_str());
     return aggNode;
 }
 
@@ -346,6 +358,7 @@ TIntermAggregate* TIntermediate::setAggregateOperator(TIntermNode* node, TOperat
 //
 TIntermTyped* TIntermediate::addConversion(TOperator op, const TType& type, TIntermTyped* node)
 {
+    printf("[FF]: addConversion\n");
     //
     // Does the base type allow operation?
     //
@@ -489,6 +502,7 @@ TIntermAggregate* TIntermediate::growAggregate(TIntermNode* left, TIntermNode* r
     if (line != 0)
         aggNode->setLine(line);
 
+    printf("[FF]: growAggregate -> %s\n", aggNode->getName().c_str());
     return aggNode;
 }
 
@@ -510,6 +524,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc lin
     else
         aggNode->setLine(node->getLine());
 
+    printf("[FF]: makeAggregate -> %s\n", aggNode->getName().c_str());
     return aggNode;
 }
 
@@ -522,6 +537,7 @@ TIntermAggregate* TIntermediate::makeAggregate(TIntermNode* node, TSourceLoc lin
 //
 TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nodePair, TSourceLoc line)
 {
+    printf("[FF]: addSelection\n");
     //
     // For compile time constant selections, prune the code and 
     // test now.
@@ -543,6 +559,7 @@ TIntermNode* TIntermediate::addSelection(TIntermTyped* cond, TIntermNodePair nod
 
 TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, TSourceLoc line)
 {
+    printf("[FF]: addComma\n");
     if (left->getType().getQualifier() == EvqConst && right->getType().getQualifier() == EvqConst) {
         return right;
     } else {
@@ -563,6 +580,7 @@ TIntermTyped* TIntermediate::addComma(TIntermTyped* left, TIntermTyped* right, T
 //
 TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* trueBlock, TIntermTyped* falseBlock, TSourceLoc line)
 {
+    printf("[FF]: addSelection\n");
     //
     // Get compatible types.
     //
@@ -605,6 +623,7 @@ TIntermTyped* TIntermediate::addSelection(TIntermTyped* cond, TIntermTyped* true
 
 TIntermConstantUnion* TIntermediate::addConstantUnion(constUnion* unionArrayPointer, const TType& t, TSourceLoc line)
 {
+    printf("[FF]: addConstantUnion\n");
     TIntermConstantUnion* node = new TIntermConstantUnion(unionArrayPointer, t);
     node->setLine(line);
 
@@ -613,7 +632,8 @@ TIntermConstantUnion* TIntermediate::addConstantUnion(constUnion* unionArrayPoin
 
 TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc line)
 {
-    
+
+    printf("[FF]: addSwizzle\n");
     TIntermAggregate* node = new TIntermAggregate(EOpSequence);
 
     node->setLine(line);
@@ -636,6 +656,7 @@ TIntermTyped* TIntermediate::addSwizzle(TVectorFields& fields, TSourceLoc line)
 //
 TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TIntermTyped* terminal, bool testFirst, TSourceLoc line)
 {
+    printf("[FF]: addLoop\n");
     TIntermNode* node = new TIntermLoop(body, test, terminal, testFirst);
     node->setLine(line);
     
@@ -647,11 +668,13 @@ TIntermNode* TIntermediate::addLoop(TIntermNode* body, TIntermTyped* test, TInte
 //
 TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TSourceLoc line)
 {
+    printf("[FF]: addBranch\n");
     return addBranch(branchOp, 0, line);
 }
 
 TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expression, TSourceLoc line)
 {
+    printf("[FF]: addBranch\n");
     TIntermBranch* node = new TIntermBranch(branchOp, expression);
     node->setLine(line);
 
@@ -664,6 +687,7 @@ TIntermBranch* TIntermediate::addBranch(TOperator branchOp, TIntermTyped* expres
 //
 bool TIntermediate::postProcess(TIntermNode* root, EShLanguage language)
 {
+    printf("[FF]: postProcess\n");
     if (root == 0)
         return true;
 

@@ -54,12 +54,12 @@ void TBuiltIns::initialize()
     TString StandardVertexAttributes;
     TString StandardUniforms;
 
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by both vertex and fragment shaders.
+    //
+    //============================================================================
     {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by both vertex and fragment shaders.
-        //
-        //============================================================================
 
         TString& s = BuiltInFunctions;
 
@@ -406,13 +406,13 @@ void TBuiltIns::initialize()
 
         s.append(TString("\n"));
     }
+    
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by vertex shaders only.
+    //
+    //============================================================================
     {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by vertex shaders only.
-        //
-        //============================================================================
-
         TString& s = BuiltInFunctionsVertex;
 
         //
@@ -440,15 +440,15 @@ void TBuiltIns::initialize()
         s.append(TString("vec4 shadow1DProjLod(sampler1DShadow sampler, vec4 coord, float lod);"));
         s.append(TString("vec4 shadow2DProjLod(sampler2DShadow sampler, vec4 coord, float lod);"));
 
-		s.append(TString("\n"));
+        s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Prototypes for built-in functions seen by fragment shaders only.
-        //
-        //============================================================================
 
+    //============================================================================
+    //
+    // Prototypes for built-in functions seen by fragment shaders only.
+    //
+    //============================================================================
+    {
         TString& s = BuiltInFunctionsFragment;
 
         //
@@ -488,13 +488,13 @@ void TBuiltIns::initialize()
 
 		s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Standard Uniforms
-        //
-        //============================================================================
 
+    //============================================================================
+    //
+    // Standard Uniforms
+    //
+    //============================================================================
+    {
         TString& s = StandardUniforms;
        
 
@@ -635,13 +635,13 @@ void TBuiltIns::initialize()
 
         s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Vertex attributes, p. 19.
-        //
-        //============================================================================
 
+    //============================================================================
+    //
+    // Vertex attributes, p. 19.
+    //
+    //============================================================================
+    {
         TString& s = StandardVertexAttributes;
 
         s.append(TString("attribute vec4  gl_Color;"));
@@ -660,13 +660,13 @@ void TBuiltIns::initialize()
 
         s.append(TString("\n"));
     }
-    {
-        //============================================================================
-        //
-        // Define the output varying interface from the vertex shader.
-        //
-        //============================================================================
 
+    //============================================================================
+    //
+    // Define the output varying interface from the vertex shader.
+    //
+    //============================================================================
+    {
         TString& s = StandardVertexVaryings;
 
         s.append(TString("varying vec4  gl_FrontColor;"));
@@ -678,12 +678,13 @@ void TBuiltIns::initialize()
 
         s.append(TString("\n"));
     }
+
+    //============================================================================
+    //
+    // Define the input varying interface to the fragment shader.
+    //
+    //============================================================================
     {
-        //============================================================================
-        //
-        // Define the input varying interface to the fragment shader.
-        //
-        //============================================================================
 
         TString& s = StandardFragmentVaryings;
 
@@ -715,13 +716,12 @@ void TBuiltIns::initialize(const TBuiltInResource &resources)
     //
     TString StandardUniforms;    
 
+    //============================================================================
+    //
+    // Standard Uniforms
+    //
+    //============================================================================
     {
-        //============================================================================
-        //
-        // Standard Uniforms
-        //
-        //============================================================================
-
         TString& s = StandardUniforms;
        
         //

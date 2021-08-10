@@ -169,10 +169,13 @@ bool GenerateBuiltInSymbolTable(const TBuiltInResource* resources, TInfoSink& in
 {
     TBuiltIns builtIns;
     
-	if (resources) {
+	if (resources) 
+    {
 		builtIns.initialize(*resources);
 		InitializeSymbolTable(builtIns.getBuiltInStrings(), language, infoSink, resources, symbolTables);
-	} else {
+	} 
+    else
+    {
 		builtIns.initialize();
 		InitializeSymbolTable(builtIns.getBuiltInStrings(), EShLangVertex, infoSink, resources, symbolTables);
 		InitializeSymbolTable(builtIns.getBuiltInStrings(), EShLangFragment, infoSink, resources, symbolTables);
@@ -212,29 +215,35 @@ bool InitializeSymbolTable(TBuiltInStrings* BuiltInStrings, EShLanguage language
     
     //Initialize the Preprocessor
     int ret = InitPreprocessor();
-    if (ret) {
+    if (ret)
+    {
         infoSink.info.message(EPrefixInternalError,  "Unable to intialize the Preprocessor");
         return false;
     }
     
     for (TBuiltInStrings::iterator i  = BuiltInStrings[parseContext.language].begin();
                                     i != BuiltInStrings[parseContext.language].end();
-                                    ++i) {
+                                    ++i)
+    {
         const char* builtInShaders[1];
         int builtInLengths[1];
 
         builtInShaders[0] = (*i).c_str();
         builtInLengths[0] = (int) (*i).size();
 
-        if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext) != 0) {
+        if (PaParseStrings(const_cast<char**>(builtInShaders), builtInLengths, 1, parseContext) != 0)
+        {
             infoSink.info.message(EPrefixInternalError, "Unable to parse built-ins");
             return false;
         }
     }
 
-	if (resources) {
+	if (resources) 
+    {
 		IdentifyBuiltIns(parseContext.language, *symbolTable, *resources);
-	} else {									   
+	} 
+    else 
+    {									   
 		IdentifyBuiltIns(parseContext.language, *symbolTable);
 	}
 
@@ -311,14 +320,22 @@ int ShCompile(
     if (success && parseContext.treeRoot) 
     {
         if (optLevel == EShOptNoGeneration)
+        {
             parseContext.infoSink.info.message(EPrefixNone, "No errors.  No code generation or linking was requested.");
-        else {
+        }
+        else 
+        {
             success = intermediate.postProcess(parseContext.treeRoot, parseContext.language);
 
-            if (success) {
+            if (success) 
+            {
 
                 if (debugOptions & EDebugOpIntermediate)
+                {
                     intermediate.outputTree(parseContext.treeRoot);
+                    intermediate.outputSymbolTableLevel(parseContext.symbolTable.getLevel(1));
+                    intermediate.outputSymbolTableLevel(parseContext.symbolTable.getLevel(2));
+                }
 
                 //
                 // Call the machine dependent compiler

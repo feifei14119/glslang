@@ -498,3 +498,21 @@ void TIntermediate::outputTree(TIntermNode* root)
 
     root->traverse(&it);
 }
+
+void TIntermediate::outputSymbolTableLevel(TSymbolTableLevel* slevel)
+{
+    if (slevel == 0)
+        return;
+
+    printf("----------------------------\n");
+    slevel->dump(infoSink);
+}
+
+void TIntermediate::outputSymbolTable(TSymbolTable* table)
+{
+    if (table == 0)
+        return;
+
+    printf("============================\n");
+    table->dump(infoSink);
+}

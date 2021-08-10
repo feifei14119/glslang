@@ -270,15 +270,12 @@ public:
     bool atBuiltInLevel() { return atSharedBuiltInLevel() || atDynamicBuiltInLevel(); }
     bool atSharedBuiltInLevel() { return table.size() == 1; }	
     bool atGlobalLevel() { return table.size() <= 3; }
-    void push() { 
-        table.push_back(new TSymbolTableLevel);
-    }
-
-    void pop() { 
+    void push() { table.push_back(new TSymbolTableLevel); }
+    void pop()
+    { 
         delete table[currentLevel()]; 
-        table.pop_back(); 
+        table.pop_back();
     }
-
     bool insert(TSymbol& symbol)
     {
         symbol.setUniqueId(++uniqueId);
@@ -301,7 +298,17 @@ public:
         return symbol;
     }
 
-    TSymbolTableLevel* getGlobalLevel() { assert(table.size() >= 3); return table[2]; }
+    TSymbolTableLevel* getGlobalLevel() 
+    {
+        assert(table.size() >= 3); return table[2]; 
+    }
+    TSymbolTableLevel* getLevel(int level)
+    {
+        if (table.size() > level)
+            return table[level];
+        else
+            return nullptr;
+    }
     void relateToOperator(const char* name, TOperator op) { table[0]->relateToOperator(name, op); }
     int getMaxSymbolId() { return uniqueId; }
     void dump(TInfoSink &infoSink) const;
