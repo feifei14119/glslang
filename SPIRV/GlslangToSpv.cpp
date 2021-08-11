@@ -752,11 +752,14 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     bool isMatrix = false;
     bool noReturnValue = false;
 
+    printf("[FF] visitAggregate: ");
     assert(node->getOp());
 
     spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
 
-    switch (node->getOp()) {
+    printf("op = %d", node->getOp());
+    switch (node->getOp()) 
+    {
     case glslang::EOpSequence:
     {
         if (preVisit)
@@ -764,7 +767,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             --sequenceDepth;
 
-        if (sequenceDepth == 1) {
+        if (sequenceDepth == 1) 
+        {
             // If this is the parent node of all the functions, we want to see them
             // early, so all call points have actual SPIR-V functions to reference.
             // In all cases, still let the traverser visit the children for us.
@@ -803,14 +807,21 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return false;
     }
     case glslang::EOpFunction:
-        if (visit == glslang::EvPreVisit) {
-            if (isShaderEntrypoint(node)) {
+    {
+        if (visit == glslang::EvPreVisit)
+        {
+            if (isShaderEntrypoint(node))
+            {
                 inMain = true;
                 builder.setBuildPoint(shaderEntry->getLastBlock());
-            } else {
+            }
+            else
+            {
                 handleFunctionEntry(node);
             }
-        } else {
+        }
+        else
+        {
             if (inMain)
                 mainTerminated = true;
             builder.leaveFunction(inMain);
@@ -818,6 +829,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         }
 
         return true;
+    }
     case glslang::EOpParameters:
         // Parameters will have been consumed by EOpFunction processing, but not
         // the body, so we still visited the function node's children, making this
@@ -887,12 +899,15 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         translateArguments(node->getSequence(), arguments);
         spv::Id resultTypeId = convertGlslangToSpvType(node->getType());
         spv::Id constructed;
-        if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray()) {
+        if (node->getOp() == glslang::EOpConstructStruct || node->getType().isArray())
+        {
             std::vector<spv::Id> constituents;
             for (int c = 0; c < (int)arguments.size(); ++c)
                 constituents.push_back(arguments[c]);
             constructed = builder.createCompositeConstruct(resultTypeId, constituents);
-        } else {
+        } 
+        else 
+        {
             if (isMatrix)
                 constructed = builder.createMatrixConstructor(precision, arguments, resultTypeId);
             else
@@ -984,7 +999,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     // See if it maps to a regular operation.
     //
 
-    if (binOp != glslang::EOpNull) {
+    if (binOp != glslang::EOpNull)
+    {
         glslang::TIntermTyped* left = node->getSequence()[0]->getAsTyped();
         glslang::TIntermTyped* right = node->getSequence()[1]->getAsTyped();
         assert(left && right);
@@ -1013,13 +1029,15 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
 
     glslang::TIntermSequence& glslangOperands = node->getSequence();
     std::vector<spv::Id> operands;
-    for (int arg = 0; arg < (int)glslangOperands.size(); ++arg) {
+    for (int arg = 0; arg < (int)glslangOperands.size(); ++arg) 
+    {
         builder.clearAccessChain();
         glslangOperands[arg]->traverse(this);
 
         // special case l-value operands; there are just a few
         bool lvalue = false;
-        switch (node->getOp()) {
+        switch (node->getOp()) 
+        {
         //case glslang::EOpFrexp:
         case glslang::EOpModf:
             if (arg == 1)
@@ -1036,7 +1054,8 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         else
             operands.push_back(builder.accessChainLoad(TranslatePrecisionDecoration(glslangOperands[arg]->getAsTyped()->getType())));
     }
-    switch (glslangOperands.size()) {
+    switch (glslangOperands.size()) 
+    {
     case 0:
         result = createNoArgOperation(node->getOp());
         break;
@@ -1051,13 +1070,17 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         }
     }
 
+    printf("\n");
     if (noReturnValue)
         return false;
 
-    if (! result) {
+    if (! result) 
+    {
         spv::MissingFunctionality("glslang aggregate");
         return true;
-    } else {
+    } 
+    else 
+    {
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
         return false;

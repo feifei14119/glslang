@@ -590,13 +590,15 @@ void CompileAndLinkShaders()
 
     glslang::TProgram& program = *new glslang::TProgram;
     glslang::TWorkItem* workItem;
-    while (Worklist.remove(workItem)) {
+    while (Worklist.remove(workItem)) 
+    {
         EShLanguage stage = FindLanguage(workItem->name);
         glslang::TShader* shader = new glslang::TShader(stage);
         shaders.push_back(shader);
     
         char** shaderStrings = ReadFileData(workItem->name.c_str());
-        if (! shaderStrings) {
+        if (! shaderStrings) 
+        {
             usage();
             return;
         }
@@ -608,7 +610,8 @@ void CompileAndLinkShaders()
         
         program.addShader(shader);
 
-        if (! (Options & EOptionSuppressInfolog)) {
+        if (! (Options & EOptionSuppressInfolog)) 
+        {
             puts(workItem->name.c_str());
             puts(shader->getInfoLog());
             puts(shader->getInfoDebugLog());
@@ -624,33 +627,42 @@ void CompileAndLinkShaders()
     if (! program.link(messages))
         LinkFailed = true;
 
-    if (! (Options & EOptionSuppressInfolog)) {
+    if (! (Options & EOptionSuppressInfolog)) 
+    {
         puts(program.getInfoLog());
         puts(program.getInfoDebugLog());
     }
 
-    if (Options & EOptionDumpReflection) {
+    if (Options & EOptionDumpReflection)
+    {
         program.buildReflection();
         program.dumpReflection();
     }
 
-    if (Options & EOptionSpv) {
+    if (Options & EOptionSpv) 
+    {
         if (CompileFailed || LinkFailed)
+        {
             printf("SPIRV is not generated for failed compile or link\n");
-        else {
-            for (int stage = 0; stage < EShLangCount; ++stage) {
-                if (program.getIntermediate((EShLanguage)stage)) {
+        }
+        else 
+        {
+            for (int stage = 0; stage < EShLangCount; ++stage) 
+            {
+                if (program.getIntermediate((EShLanguage)stage)) 
+                {
                     std::vector<unsigned int> spirv;
                     glslang::GlslangToSpv(*program.getIntermediate((EShLanguage)stage), spirv);
                     const char* name;
-                    switch (stage) {
-                    case EShLangVertex:          name = "vert";    break;
-                    case EShLangTessControl:     name = "tesc";    break;
-                    case EShLangTessEvaluation:  name = "tese";    break;
-                    case EShLangGeometry:        name = "geom";    break;
-                    case EShLangFragment:        name = "frag";    break;
-                    case EShLangCompute:         name = "comp";    break;
-                    default:                     name = "unknown"; break;
+                    switch (stage) 
+                    {
+                        case EShLangVertex:          name = "vert";    break;
+                        case EShLangTessControl:     name = "tesc";    break;
+                        case EShLangTessEvaluation:  name = "tese";    break;
+                        case EShLangGeometry:        name = "geom";    break;
+                        case EShLangFragment:        name = "frag";    break;
+                        case EShLangCompute:         name = "comp";    break;
+                        default:                     name = "unknown"; break;
                     }
                     glslang::OutputSpv(spirv, name);
                 }
@@ -663,7 +675,8 @@ void CompileAndLinkShaders()
     // the stuff from the shaders has to have its destructors called
     // before the pools holding the memory in the shaders is freed.
     delete &program;
-    while (shaders.size() > 0) {
+    while (shaders.size() > 0)
+    {
         delete shaders.back();
         shaders.pop_back();
     }

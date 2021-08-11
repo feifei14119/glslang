@@ -82,7 +82,7 @@ NVIDIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef _WIN32
 #define _CRT_SECURE_NO_WARNINGS
-#define snprintf sprintf_s
+//#define snprintf sprintf_s
 #endif
 
 #include <assert.h>

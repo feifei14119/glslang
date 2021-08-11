@@ -5,7 +5,7 @@ set(CMAKE_INSTALL_PREFIX "install" CACHE STRING "prefix" FORCE)
 project(glslang)
 
 if(WIN32)
-    set(CMAKE_GENERATOR_TOOLSET "v110" CACHE STRING "Platform Toolset" FORCE)
+    #set(CMAKE_GENERATOR_TOOLSET "v110" CACHE STRING "Platform Toolset" FORCE)
     include(ChooseMSVCCRT.cmake)
 elseif(UNIX)
     add_definitions(-fPIC)
