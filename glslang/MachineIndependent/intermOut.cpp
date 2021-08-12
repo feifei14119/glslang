@@ -52,7 +52,8 @@ namespace glslang {
 // Use this class to carry along data from node to node in
 // the traversal
 //
-class TOutputTraverser : public TIntermTraverser {
+class TOutputTraverser : public TIntermTraverser 
+{
 public:
     TOutputTraverser(TInfoSink& i) : infoSink(i) { }
 
@@ -99,11 +100,13 @@ void OutputTreeText(TInfoSink& infoSink, const TIntermNode* node, const int dept
 bool TOutputTraverser::visitBinary(TVisit /* visit */, TIntermBinary* node)
 {
     TInfoSink& out = infoSink;
+    out.debug << "[Binary]: ";
 
     OutputTreeText(out, node, depth);
 
-    switch (node->getOp()) {
-    case EOpAssign:                   out.debug << "move second child to first child";           break;
+    switch (node->getOp())
+    {
+    case EOpAssign:                   out.debug << "(EOpAssign) move second child to first child";           break;
     case EOpAddAssign:                out.debug << "add second child into first child";          break;
     case EOpSubAssign:                out.debug << "subtract second child into first child";     break;
     case EOpMulAssign:                out.debug << "multiply second child into first child";     break;
@@ -168,7 +171,8 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 
     OutputTreeText(out, node, depth);
 
-    switch (node->getOp()) {
+    switch (node->getOp()) 
+    {
     case EOpNegative:       out.debug << "Negate value";         break;
     case EOpVectorLogicalNot:
     case EOpLogicalNot:     out.debug << "Negate conditional";   break;
@@ -281,21 +285,24 @@ bool TOutputTraverser::visitUnary(TVisit /* visit */, TIntermUnary* node)
 bool TOutputTraverser::visitAggregate(TVisit /* visit */, TIntermAggregate* node)
 {
     TInfoSink& out = infoSink;
+    out.debug <<"[Aggregate]: ";
 
-    if (node->getOp() == EOpNull) {
+    if (node->getOp() == EOpNull) 
+    {
         out.debug.message(EPrefixError, "node is still EOpNull!");
         return true;
     }
 
     OutputTreeText(out, node, depth);
 
-    switch (node->getOp()) {
-    case EOpSequence:      out.debug << "Sequence\n";       return true;
-    case EOpLinkerObjects: out.debug << "Linker Objects\n"; return true;
+    switch (node->getOp())
+    {
+    case EOpSequence:      out.debug << "(EOpSequence) Sequence\n";       return true;
+    case EOpLinkerObjects: out.debug << "(EOpLinkerObjects) Linker Objects\n"; return true;
     case EOpComma:         out.debug << "Comma";            break;
-    case EOpFunction:      out.debug << "Function Definition: " << node->getName(); break;
-    case EOpFunctionCall:  out.debug << "Function Call: "       << node->getName(); break;
-    case EOpParameters:    out.debug << "Function Parameters: ";                    break;
+    case EOpFunction:      out.debug << "(EOpFunction) Function Definition: " << node->getName(); break;
+    case EOpFunctionCall:  out.debug << "Function Call: " << node->getName(); break;
+    case EOpParameters:    out.debug << "(EOpParameters) Function Parameters: ";                    break;
 
     case EOpConstructFloat: out.debug << "Construct float"; break;
     case EOpConstructVec2:  out.debug << "Construct vec2";  break;
@@ -471,6 +478,7 @@ void OutputConstantUnion(TInfoSink& out, const TIntermTyped* node, const TConstU
 
 void TOutputTraverser::visitConstantUnion(TIntermConstantUnion* node)
 {
+    infoSink.debug << "[ConstantUnion]: ";
     OutputTreeText(infoSink, node, depth);
     infoSink.debug << "Constant:\n";
 
@@ -479,6 +487,7 @@ void TOutputTraverser::visitConstantUnion(TIntermConstantUnion* node)
 
 void TOutputTraverser::visitSymbol(TIntermSymbol* node)
 {
+    infoSink.debug << "[Symbol]: ";
     OutputTreeText(infoSink, node, depth);
 
     infoSink.debug << "'" << node->getName() << "' (" << node->getCompleteString() << ")\n";

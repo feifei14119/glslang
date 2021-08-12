@@ -64,7 +64,8 @@ const int GlslangMagic = 0x51a;
 //
 // Derives from the AST walking base class.
 //
-class TGlslangToSpvTraverser : public glslang::TIntermTraverser {
+class TGlslangToSpvTraverser : public glslang::TIntermTraverser 
+{
 public:
     TGlslangToSpvTraverser(const glslang::TIntermediate*);
     virtual ~TGlslangToSpvTraverser();
@@ -487,11 +488,13 @@ TGlslangToSpvTraverser::~TGlslangToSpvTraverser()
 //
 void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 {
+    printf("[Symbol]: \n");
     // getSymbolId() will set up all the IO decorations on the first call.
     // Formal function parameters were mapped during makeFunctions().
     spv::Id id = getSymbolId(symbol);
     
-    if (! linkageOnly) {
+    if (! linkageOnly) 
+    {
         // Prepare to generate code for the access
 
         // L-value chains will be computed left to right.  We're on the symbol now,
@@ -512,9 +515,12 @@ void TGlslangToSpvTraverser::visitSymbol(glslang::TIntermSymbol* symbol)
 
 bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::TIntermBinary* node)
 {
+    printf("[Binary]: ");
+
     // First, handle special cases
-    switch (node->getOp()) {
-    case glslang::EOpAssign:
+    switch (node->getOp()) 
+    {
+    case glslang::EOpAssign:      printf("(EOpAssign) \n");
     case glslang::EOpAddAssign:
     case glslang::EOpSubAssign:
     case glslang::EOpMulAssign:
@@ -666,9 +672,12 @@ bool TGlslangToSpvTraverser::visitBinary(glslang::TVisit /* visit */, glslang::T
                                    convertGlslangToSpvType(node->getType()), left, right,
                                    node->getLeft()->getType().getBasicType());
 
-    if (! result) {
+    if (! result) 
+    {
         spv::MissingFunctionality("glslang binary operation");
-    } else {
+    } 
+    else
+    {
         builder.clearAccessChain();
         builder.setAccessChainRValue(result);
 
@@ -746,22 +755,23 @@ bool TGlslangToSpvTraverser::visitUnary(glslang::TVisit /* visit */, glslang::TI
 
 bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TIntermAggregate* node)
 {
+    printf("[Aggregate]: ");
+
     spv::Id result;
     glslang::TOperator binOp = glslang::EOpNull;
     bool reduceComparison = true;
     bool isMatrix = false;
     bool noReturnValue = false;
 
-    printf("[FF] visitAggregate: ");
     assert(node->getOp());
 
     spv::Decoration precision = TranslatePrecisionDecoration(node->getType());
 
-    printf("op = %d", node->getOp());
     switch (node->getOp()) 
     {
     case glslang::EOpSequence:
     {
+        printf("(EOpSequence) \n");
         if (preVisit)
             ++sequenceDepth;
         else
@@ -789,6 +799,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     }
     case glslang::EOpLinkerObjects:
     {
+        printf("(EOpLinkerObjects) \n");
         if (visit == glslang::EvPreVisit)
             linkageOnly = true;
         else
@@ -808,6 +819,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
     }
     case glslang::EOpFunction:
     {
+        printf("(EOpFunction) \n");
         if (visit == glslang::EvPreVisit)
         {
             if (isShaderEntrypoint(node))
@@ -831,6 +843,7 @@ bool TGlslangToSpvTraverser::visitAggregate(glslang::TVisit visit, glslang::TInt
         return true;
     }
     case glslang::EOpParameters:
+        printf("(EOpParameters) \n");
         // Parameters will have been consumed by EOpFunction processing, but not
         // the body, so we still visited the function node's children, making this
         // child redundant.
@@ -1184,6 +1197,7 @@ bool TGlslangToSpvTraverser::visitSwitch(glslang::TVisit /* visit */, glslang::T
 
 void TGlslangToSpvTraverser::visitConstantUnion(glslang::TIntermConstantUnion* node)
 {
+    printf("[ConstantUnion]: \n");
     int nextConst = 0;
     spv::Id constant = createSpvConstant(node->getType(), node->getConstArray(), nextConst);
 

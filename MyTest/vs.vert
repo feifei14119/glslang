@@ -1,10 +1,10 @@
 #version 110
 
-attribute vec3 Position;
-attribute vec4 Color;
+//attribute vec3 Position;
+//attribute vec4 Color;
 
-varying vec3 VertexColor;
-varying vec3 VertexPosition;
+//varying vec3 VertexColor;
+//varying vec3 VertexPosition;
 
 //uniform mat4 P;
 //uniform mat4 V;
